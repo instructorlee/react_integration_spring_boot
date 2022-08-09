@@ -19,17 +19,12 @@ import javax.persistence.FetchType;
 @Data
 @Table(name = "users", 
     uniqueConstraints = { 
-      @UniqueConstraint(columnNames = "username"),
       @UniqueConstraint(columnNames = "email") 
     })
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
-  @NotBlank
-  @Size(max = 20)
-  private String username;
 
   @NotBlank
   @Size(max = 50)
@@ -52,8 +47,7 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "role_id"))
   private Set<Role> roles = new HashSet<>();
 
-  public User(String username, String email, String password) {
-    this.username = username;
+  public User(String email, String password) {
     this.email = email;
     this.password = password;
   }

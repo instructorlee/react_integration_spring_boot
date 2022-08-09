@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class Topic {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
+    @Size(min=1)
     private String title;
     private String players;
     private String setting;
