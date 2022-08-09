@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lee.demo.repositories.UserRepository;
 import com.lee.demo.repositories.RoleRepository;
 import com.lee.demo.config.JwtUtils;
-import com.lee.demo.models.ERole;
 import com.lee.demo.models.Role;
 import com.lee.demo.models.User;
 import com.lee.demo.payload.request.LoginRequest;
@@ -58,9 +57,7 @@ public class AuthController {
 				.collect(Collectors.toList());
 		return ResponseEntity.ok(new JwtResponse(jwt, 
 												 userDetails.getId(), 
-												 userDetails.getUsername(), 
-												 userDetails.getEmail(), 
-												 roles));
+												 userDetails.getEmail()));
 	}
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {

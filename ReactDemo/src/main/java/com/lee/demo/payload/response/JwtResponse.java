@@ -10,19 +10,19 @@ public class JwtResponse {
   private String email;
   private List<String> roles;
 
-  public JwtResponse(String accessToken, Long id, String username, String email, List<String> roles) {
+  public JwtResponse(String accessToken, Long id, String email) {
     this.token = accessToken;
     this.id = id;
-    this.username = username;
+    //this.username = username;
     this.email = email;
-    this.roles = roles;
+    //this.roles = roles;
   }
 
-  public String getaccess_token() { // odd naming convention to match React requirements
+  public String getauth_token() { // odd naming convention to match React requirements
     return token;
   }
 
-  public void setaccess_token(String accessToken) { 
+  public void setauth_token(String accessToken) { 
     this.token = accessToken;
   }
 
@@ -52,6 +52,7 @@ public class JwtResponse {
     this.email = email;
   }
 
+  /*
   public String getUsername() {
     return username;
   }
@@ -63,4 +64,5 @@ public class JwtResponse {
   public List<String> getRoles() {
     return roles;
   }
+  */
 }
