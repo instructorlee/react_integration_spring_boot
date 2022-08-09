@@ -1,4 +1,5 @@
 package com.lee.demo.services;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -6,8 +7,15 @@ import com.lee.demo.models.User;
 import com.lee.demo.repositories.RoleRepository;
 import com.lee.demo.repositories.UserRepository;
  
-//@Service
+@Service
 public class UserService {
+
+    @Autowired
+    UserRepository repository;
+
+    public User findByEmail(String email) {
+        return this.repository.findByEmail(email);
+    }
 	/*
     private UserRepository userRepository;
     private RoleRepository roleRepository;

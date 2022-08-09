@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lee.demo.models.Topic;
 import com.lee.demo.services.TopicService;
 import com.lee.demo.models.User;
+import com.lee.demo.services.UserService;
 
 import java.security.Principal;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -29,6 +31,9 @@ public class TopicController {
 
     @Autowired
     TopicService service;
+
+    @Autowired
+    UserService userService;
     
     @PostMapping("/add")
     public ResponseEntity<Topic> add(
@@ -69,10 +74,12 @@ public class TopicController {
     }
 
     @GetMapping("/my")
-    public ResponseEntity<Topic> myTopics(
+    public ResponseEntity<List<Topic>> myTopics(
         Principal principal
         ) {
-            User t = (User) principal;
-            return ResponseEntity.status(200).body(this.service.retrieve((long) 1));
+
+            User user = userService.findByEmail(principal.getName());
+
+            return ResponseEntity.status(200).body(user.getTopics());
     }
 }

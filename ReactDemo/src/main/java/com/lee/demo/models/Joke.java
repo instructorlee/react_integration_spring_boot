@@ -5,6 +5,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.FetchType;
@@ -30,5 +33,6 @@ public class Joke {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id") // parent-name_id
+    @JsonIgnore
     private User user;
 }

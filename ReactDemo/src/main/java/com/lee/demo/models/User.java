@@ -11,6 +11,9 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.JoinColumn;
 import javax.persistence.FetchType;
 
@@ -36,15 +39,18 @@ public class User {
   private String password;
 
   @OneToMany(mappedBy="user", cascade=CascadeType.ALL, fetch = FetchType.LAZY) // mappedBy must match attribute in child
+  @JsonIgnore
   private List<Topic> topics;
 
   @OneToMany(mappedBy="user", cascade=CascadeType.ALL, fetch = FetchType.LAZY) // mappedBy must match attribute in child
+  @JsonIgnore
   private List<Joke> jokes;
 
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(  name = "user_roles", 
         joinColumns = @JoinColumn(name = "user_id"), 
         inverseJoinColumns = @JoinColumn(name = "role_id"))
+  @JsonIgnore
   private Set<Role> roles = new HashSet<>();
 
   public User(String email, String password) {

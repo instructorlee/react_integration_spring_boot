@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.JoinColumn;
@@ -38,6 +40,7 @@ public class Topic {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id") // parent-name_id
+    @JsonIgnore
     private User user;
 
     @OneToMany(mappedBy="topic", cascade=CascadeType.ALL, fetch = FetchType.LAZY) // mappedBy must match attribute in child
