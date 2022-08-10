@@ -2,6 +2,9 @@ package com.lee.demo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 public class ReactDemoApplication {
@@ -10,4 +13,15 @@ public class ReactDemoApplication {
 		SpringApplication.run(ReactDemoApplication.class, args);
 	}
 
+/* 
+	@Bean
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/user/login").allowedOrigins("*");
+			}
+		};
+	}
+	*/
 }

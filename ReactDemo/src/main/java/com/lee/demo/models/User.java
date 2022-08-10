@@ -58,4 +58,9 @@ public class User {
     this.password = password;
   }
 
+  public User( long id, String email ) {
+    this.id = id;
+    this.email = email;
+  }
+
 }

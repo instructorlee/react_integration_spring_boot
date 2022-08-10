@@ -1,5 +1,7 @@
 package com.lee.demo.controllers;
 
+import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,29 +28,38 @@ import com.lee.demo.models.Role;
 import com.lee.demo.models.User;
 import com.lee.demo.payload.request.LoginRequest;
 import com.lee.demo.payload.request.SignupRequest;
+import com.lee.demo.payload.response.ErrorsResponse;
 import com.lee.demo.payload.response.JwtResponse;
 import com.lee.demo.payload.response.MessageResponse;
 import com.lee.demo.services.UserDetailsImpl;
+import com.lee.demo.services.UserService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/user")
 public class AuthController {
+	
 	@Autowired
 	AuthenticationManager authenticationManager;
+	
 	@Autowired
 	UserRepository userRepository;
+
+	@Autowired
+    UserService userService;
+	
 	@Autowired
 	RoleRepository roleRepository;
+	
 	@Autowired
 	PasswordEncoder encoder;
+	
 	@Autowired
 	JwtUtils jwtUtils;
-	
-	@PostMapping("/login")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+
+	private JwtResponse generateTokenResponse (String email, String password) {
 		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+				new UsernamePasswordAuthenticationToken(email, password));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = jwtUtils.generateJwtToken(authentication);
 		
@@ -55,21 +67,33 @@ public class AuthController {
 		List<String> roles = userDetails.getAuthorities().stream()
 				.map(item -> item.getAuthority())
 				.collect(Collectors.toList());
-		return ResponseEntity.ok(new JwtResponse(jwt, 
-												 userDetails.getId(), 
-												 userDetails.getEmail()));
+		return new JwtResponse(jwt, 
+								new User(userDetails.getId(), userDetails.getEmail()));
 	}
+	
+	@PostMapping("/login")
+	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+
+		return ResponseEntity.ok(this.generateTokenResponse(loginRequest.getEmail(), loginRequest.getPassword()));
+	}
+	
 	@PostMapping("/register")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Username is already taken!"));
+
+		List <String> errors = new ArrayList<String>();
+		if ( userRepository.existsByEmail(signUpRequest.getEmail()) ) {
+			errors.add("Email unavailable");
 		}
-		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Email is already in use!"));
+		
+		if ( signUpRequest.getPassword() == "" || signUpRequest.getPassword() == null) {
+			errors.add("Password Required");
+		}
+		else if ( ! signUpRequest.getPassword().equals(signUpRequest.getConfirm_password()) ) {
+			errors.add("Passwords must match");
+		}
+
+		if ( errors.size() > 0 ) {
+			return ResponseEntity.status(422).body(new ErrorsResponse(errors));
 		}
 		// Create new user's account
 		User user = new User(signUpRequest.getEmail(),
@@ -103,5 +127,16 @@ public class AuthController {
 		user.setRoles(roles);
 		userRepository.save(user);
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+	}
+
+	@GetMapping("/current-user")
+	public ResponseEntity<?> currentUser(
+		Principal principal
+		) {
+			
+			User user = userService.findByEmail(principal.getName());
+			String jwt = jwtUtils.generateJwtToken(principal.getName());	
+			
+			return ResponseEntity.ok(new JwtResponse(jwt, new User(user.getId(), user.getEmail())));
 	}
 }
