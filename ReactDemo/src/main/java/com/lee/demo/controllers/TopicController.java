@@ -1,6 +1,5 @@
 package com.lee.demo.controllers;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +19,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -43,7 +41,7 @@ public class TopicController {
             if ( !result.hasErrors() ) {
                 return ResponseEntity.status(201).body(this.service.create(topic));
             }
-        return ResponseEntity.status(422).body(null);
+            return ResponseEntity.status(422).body(null);
     }
 
     @PostMapping("/update")

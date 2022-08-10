@@ -12,16 +12,4 @@ public class ReactDemoApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ReactDemoApplication.class, args);
 	}
-
-/* 
-	@Bean
-	public WebMvcConfigurer corsConfigurer() {
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/user/login").allowedOrigins("*");
-			}
-		};
-	}
-	*/
 }
